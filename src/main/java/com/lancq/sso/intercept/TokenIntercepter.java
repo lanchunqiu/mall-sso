@@ -1,12 +1,16 @@
 package com.lancq.sso.intercept;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lancq.sso.Anoymous;
 import com.lancq.sso.controller.BaseController;
 import com.lancq.sso.utils.CookieUtil;
+//import com.lancq.user.IUserCoreService;
 import com.lancq.user.IUserCoreService;
 import com.lancq.user.dto.CheckAuthRequest;
 import com.lancq.user.dto.CheckAuthResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -21,16 +25,19 @@ import java.lang.reflect.Method;
  * @Date 2018/7/5
  **/
 public class TokenIntercepter extends HandlerInterceptorAdapter {
+    Logger Log = LoggerFactory.getLogger(this.getClass());
     private final String ACCESS_TOKEN="access_token";
 
     @Autowired
-    IUserCoreService iUserCoreService;
+    IUserCoreService userCoreService;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if(!(handler instanceof HandlerMethod)){
             return true;
         }
-
+        Log.debug("request:" + request);
+        Log.debug("response:" + response);
+        Log.debug("handler:" + handler);
         HandlerMethod handlerMethod = (HandlerMethod) handler;
 
         Object bean = handlerMethod.getBean();
@@ -56,7 +63,7 @@ public class TokenIntercepter extends HandlerInterceptorAdapter {
         }
         CheckAuthRequest checkAuthRequest=new CheckAuthRequest();
         checkAuthRequest.setToken(token);
-        CheckAuthResponse checkAuthResponse = iUserCoreService.validToken(checkAuthRequest);
+        CheckAuthResponse checkAuthResponse = userCoreService.validToken(checkAuthRequest);
         if("000000".equals(checkAuthResponse.getCode())){
             BaseController baseController = (BaseController) bean;
             baseController.setUid(checkAuthResponse.getUid());
@@ -69,7 +76,10 @@ public class TokenIntercepter extends HandlerInterceptorAdapter {
                     ",\"msg\":\""+checkAuthResponse.getMsg()+"\"}");
             return false;
         }
-        response.sendRedirect("/pages/login.html");
+        //response.sendRedirect("/pages/login.html");
+        ObjectMapper objectMapper = new ObjectMapper();
+        response.setContentType("text/html;charset=UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(checkAuthResponse));
         return false;
     }
 
