@@ -14,6 +14,16 @@
                                 expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
     </context:component-scan>
 
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/resources/**"/>
+            <mvc:exclude-mapping path="/pages/**"/>
+            <bean class="com.lancq.sso.intercept.TokenIntercepter"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+
     <mvc:default-servlet-handler />
     <!-- 启用spring mvc 注解 -->
     <context:annotation-config />
