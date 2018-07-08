@@ -13,8 +13,8 @@ $(function(){
             data:{username:username,password:$("#password").val()},
             success:function(data){
                 if(data.code=="000000"){
-                    alert("登录成功");
-                    // location.href="/index.shtml";
+                    //alert("登录成功");
+                    window.location.href=data.data;
                 }else{
                     alert(data.msg);
                 }

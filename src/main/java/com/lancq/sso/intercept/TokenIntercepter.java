@@ -1,10 +1,10 @@
 package com.lancq.sso.intercept;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lancq.sso.Anoymous;
+import com.lancq.commom.annotation.Anoymous;
+import com.lancq.commom.constants.MallWebConstant;
+import com.lancq.commom.utils.CookieUtil;
 import com.lancq.sso.controller.BaseController;
-import com.lancq.sso.utils.CookieUtil;
-//import com.lancq.user.IUserCoreService;
 import com.lancq.user.IUserCoreService;
 import com.lancq.user.dto.CheckAuthRequest;
 import com.lancq.user.dto.CheckAuthResponse;
@@ -58,7 +58,7 @@ public class TokenIntercepter extends HandlerInterceptorAdapter {
                 response.getWriter().write("{\"code\":\"-1\",\"msg\":\"error\"}");
                 return false;
             }
-            response.sendRedirect("/pages/login.html");
+            response.sendRedirect(MallWebConstant.MALL_SSO_ACCESS_URL);
             return false;
         }
         CheckAuthRequest checkAuthRequest=new CheckAuthRequest();
@@ -76,10 +76,10 @@ public class TokenIntercepter extends HandlerInterceptorAdapter {
                     ",\"msg\":\""+checkAuthResponse.getMsg()+"\"}");
             return false;
         }
-        //response.sendRedirect("/pages/login.html");
-        ObjectMapper objectMapper = new ObjectMapper();
-        response.setContentType("text/html;charset=UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(checkAuthResponse));
+        response.sendRedirect(MallWebConstant.MALL_SSO_ACCESS_URL);
+        //ObjectMapper objectMapper = new ObjectMapper();
+        //response.setContentType("text/html;charset=UTF-8");
+        //response.getWriter().write(objectMapper.writeValueAsString(checkAuthResponse));
         return false;
     }
 

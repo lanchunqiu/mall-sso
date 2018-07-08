@@ -2,5 +2,10 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/resources/js/layer/theme/default/icon-ext.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/resources/js/layer/theme/default/icon.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/resources/js/layer/theme/default/loading-0.gif" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/resources/js/layer/theme/default/loading-1.gif" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/webapp/resources/js/layer/theme/default/loading-2.gif" charset="GBK" />
   </component>
 </project>
