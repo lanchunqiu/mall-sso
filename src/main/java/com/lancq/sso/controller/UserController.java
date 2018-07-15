@@ -5,14 +5,12 @@ import com.lancq.commom.constants.MallWebConstant;
 import com.lancq.sso.controller.support.ResponseData;
 import com.lancq.sso.controller.support.ResponseEnum;
 import com.lancq.user.IUserCoreService;
-import com.lancq.user.dto.UserLoginRequest;
-import com.lancq.user.dto.UserLoginResponse;
-import com.lancq.user.dto.UserQueryRequest;
-import com.lancq.user.dto.UserRegisterRequest;
+import com.lancq.user.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,6 +28,10 @@ public class UserController extends BaseController{
     Logger Log = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private IUserCoreService userCoreService;
+
+    @Autowired
+    KafkaTemplate kafkaTemplate;
+
 
     /**
      * 用户登录
@@ -71,7 +73,12 @@ public class UserController extends BaseController{
         userRegisterRequest.setUsername(username);
         userRegisterRequest.setPassword(password);
         try {
-            userCoreService.register(userRegisterRequest);
+            UserRegisterResponse response = userCoreService.register(userRegisterRequest);
+
+            //异步化解耦
+            kafkaTemplate.send("test",response.getUid());
+
+
         } catch(Exception e) {
             data.setMessage(ResponseEnum.FAILED.getMsg());
             data.setCode(ResponseEnum.FAILED.getCode());
